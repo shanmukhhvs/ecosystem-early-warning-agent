@@ -1,0 +1,2635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web of Trust · Supply Chain Sentinel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Color System - Dark Theme */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #171717;
+      --bg-tertiary: #202020;
+      --bg-elevated: #262626;
+      --bg-input: #2a2a2a;
+      --border-subtle: #2a2a2a;
+      --border-default: #333333;
+      --border-strong: #454545;
+
+      --text-primary: #ececec;
+      --text-secondary: #b4b4b4;
+      --text-tertiary: #8a8a8a;
+      --text-muted: #6a6a6a;
+
+      --accent: #f97316;
+      --accent-hover: #ea580c;
+      --accent-glow: rgba(249, 115, 22, 0.15);
+
+      --gradient-brand: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
+      --gradient-text: linear-gradient(135deg, #ffffff 0%, #a3a3a3 100%);
+
+      --danger: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.1);
+      --danger-border: rgba(239, 68, 68, 0.3);
+
+      --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.1);
+      --warning-border: rgba(245, 158, 11, 0.3);
+
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.1);
+      --success-border: rgba(16, 185, 129, 0.3);
+
+      --info: #3b82f6;
+      --info-bg: rgba(59, 130, 246, 0.1);
+      --info-border: rgba(59, 130, 246, 0.3);
+
+      --header-bg: rgba(10, 10, 10, 0.92);
+
+      /* Sizing */
+      --header-height: 64px;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.4);
+      --shadow-glow: 0 0 40px var(--accent-glow);
+    }
+
+    /* Light Theme Overrides */
+    body.light-mode {
+      --bg-primary: #f5f5f5;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f0f0f0;
+      --bg-elevated: #ffffff;
+      --bg-input: #e8e8e8;
+      --border-subtle: #e0e0e0;
+      --border-default: #d0d0d0;
+      --border-strong: #b0b0b0;
+
+      --text-primary: #111111;
+      --text-secondary: #444444;
+      --text-tertiary: #666666;
+      --text-muted: #888888;
+
+      --gradient-text: linear-gradient(135deg, #111827 0%, #374151 100%);
+      --header-bg: rgba(255, 255, 255, 0.95);
+
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+    }
+
+    /* Fix hardcoded white text in light mode */
+    body.light-mode .btn-primary,
+    body.light-mode .badge-live,
+    body.light-mode .pkg-group-toggle,
+    body.light-mode .risk-score,
+    body.light-mode .threat-tab.active {
+      color: #fff;
+    }
+    body.light-mode .header-stat-value {
+      color: #111827;
+      font-weight: 700;
+    }
+    body.light-mode .header-stat-value.danger { color: #dc2626; }
+    body.light-mode .header-stat-value.accent { color: #ea580c; }
+    body.light-mode .header-stat-label {
+      color: #374151;
+      font-weight: 500;
+    }
+    body.light-mode .brand-title {
+      color: #111827;
+    }
+    body.light-mode .brand-subtitle {
+      color: #374151;
+      font-weight: 500;
+    }
+    body.light-mode .stat-info {
+      color: #6b7280;
+      border-color: #9ca3af;
+    }
+    body.light-mode .badge-live {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #059669;
+    }
+    body.light-mode .badge-live .pulse-dot {
+      background: #059669;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+    }
+    body.light-mode .threat-tab {
+      color: #374151;
+      background: #e5e7eb;
+    }
+    body.light-mode .threat-tab:hover {
+      background: #d1d5db;
+      color: #111827;
+    }
+    body.light-mode .threat-tab.active {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    body.light-mode::before {
+      background: radial-gradient(circle, rgba(249,115,22,0.05) 0%, transparent 60%);
+    }
+
+    /* Light mode: drop zone — stronger dashed border */
+    body.light-mode .upload-zone {
+      border-color: #9ca3af;
+      background: #ffffff;
+    }
+    body.light-mode .upload-zone:hover,
+    body.light-mode .upload-zone.drag {
+      border-color: #f97316;
+      background: rgba(249,115,22,0.04);
+    }
+
+    /* Light mode: Analyze button — keep gradient vivid, just mute cursor when disabled */
+    body.light-mode .btn-primary:disabled {
+      opacity: 0.75;
+      background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
+      color: #fff;
+    }
+    body.light-mode .btn-primary:not(:disabled) {
+      background: linear-gradient(135deg, #ea6005 0%, #db2777 100%);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(234,96,5,0.35);
+    }
+
+    /* Light mode: summary stat cards */
+    body.light-mode .stat-card-label {
+      color: #374151;
+      font-weight: 700;
+    }
+    body.light-mode .stat-card.total {
+      border-color: rgba(59,130,246,0.5);
+      background: linear-gradient(135deg, rgba(59,130,246,0.08) 0%, #ffffff 60%);
+      box-shadow: 0 2px 8px rgba(59,130,246,0.12);
+    }
+    body.light-mode .stat-card.critical {
+      border-color: rgba(239,68,68,0.5);
+      background: linear-gradient(135deg, rgba(239,68,68,0.08) 0%, #ffffff 60%);
+      box-shadow: 0 2px 8px rgba(239,68,68,0.12);
+    }
+    body.light-mode .stat-card.warning {
+      border-color: rgba(245,158,11,0.5);
+      background: linear-gradient(135deg, rgba(245,158,11,0.08) 0%, #ffffff 60%);
+      box-shadow: 0 2px 8px rgba(245,158,11,0.12);
+    }
+    body.light-mode .stat-card.safe {
+      border-color: rgba(16,185,129,0.5);
+      background: linear-gradient(135deg, rgba(16,185,129,0.08) 0%, #ffffff 60%);
+      box-shadow: 0 2px 8px rgba(16,185,129,0.12);
+    }
+
+    /* Light mode: safe package tags — stronger contrast */
+    body.light-mode .safe-list-item {
+      color: #1f2937;
+      background: #e5e7eb;
+      border: 1px solid #d1d5db;
+    }
+
+    /* Light mode: safe list container border */
+    body.light-mode .safe-list-items {
+      background: #f9fafb;
+      border-color: #d1d5db;
+    }
+
+    /* Light mode: safe section header */
+    body.light-mode .safe-list summary {
+      color: #059669;
+    }
+
+    /* Light mode: contact / footer card text */
+    body.light-mode .sample-prompt-text {
+      color: #111827;
+    }
+    body.light-mode .sample-prompt-sub {
+      color: #4b5563;
+    }
+    body.light-mode .sample-prompt {
+      background: #ffffff;
+      border-color: #9ca3af;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    body.light-mode .sample-prompt:hover {
+      border-color: #f97316;
+      box-shadow: 0 4px 12px rgba(249,115,22,0.15);
+    }
+
+    /* Light mode: NEED HELP / prompts heading */
+    body.light-mode .prompts-heading {
+      color: #374151;
+    }
+
+    /* Light mode: coordinated attack alert box */
+    body.light-mode .cluster-alert {
+      background: linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(245,158,11,0.04) 100%);
+      border: 1.5px solid rgba(245,158,11,0.55);
+      box-shadow: 0 2px 8px rgba(245,158,11,0.15);
+    }
+    body.light-mode .cluster-alert-title {
+      color: #b45309;
+    }
+
+    /* Light mode: cluster alert content */
+    body.light-mode .cluster-item {
+      color: #111827;
+    }
+    body.light-mode .cluster-pkgs {
+      color: #1f2937;
+      font-weight: 600;
+    }
+    body.light-mode .cluster-item code {
+      background: rgba(245,158,11,0.15);
+      color: #92400e;
+      border: 1px solid rgba(245,158,11,0.4);
+    }
+
+    /* Theme toggle button */
+    .theme-toggle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border-default);
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      transition: background 0.2s, border-color 0.2s;
+      position: relative;
+    }
+    .theme-toggle:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--border-strong);
+    }
+    .theme-toggle .theme-tooltip {
+      position: absolute;
+      bottom: -32px;
+      right: 0;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      z-index: 100;
+    }
+    .theme-toggle:hover .theme-tooltip {
+      opacity: 1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-default);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--border-strong);
+    }
+
+    /* Ambient background glow */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -300px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Top Header */
+    .header {
+      height: var(--header-height);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      background: var(--header-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--gradient-brand);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 1px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-stats {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-right: 16px;
+      border-right: 1px solid var(--border-subtle);
+    }
+
+    .header-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .header-stat-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+
+    .header-stat-value.danger { color: var(--danger); }
+    .header-stat-value.accent { color: var(--accent); }
+
+    .threat-tabs {
+      display: flex;
+      gap: 3px;
+      margin-top: 6px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      padding: 2px;
+    }
+    .threat-tab {
+      background: none;
+      border: none;
+      color: var(--text-tertiary);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .threat-tab:hover {
+      color: var(--text-primary);
+    }
+    .threat-tab.active {
+      background: var(--danger);
+      color: #fff;
+      box-shadow: 0 0 8px rgba(239,68,68,0.5);
+    }
+    .header-stat-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stat-info {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid var(--border-strong);
+      color: var(--text-muted);
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 1;
+      cursor: help;
+    }
+
+    .stat-info:hover { color: var(--text-primary); border-color: var(--text-tertiary); }
+
+    .stat-info::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: 150%;
+      right: 0;
+      width: 200px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: normal;
+      line-height: 1.4;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.15s;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .stat-info:hover::after {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .badge-live {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.3); }
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Welcome View */
+    .welcome-title {
+      font-size: 52px;
+      font-weight: 800;
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 16px;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+    }
+
+    .welcome-title-accent {
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .welcome-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 48px;
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.5;
+    }
+
+    /* Upload Card */
+    .upload-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .upload-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--gradient-brand);
+      opacity: 0.6;
+    }
+
+    .upload-zone {
+      border: 2px dashed var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 28px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg-primary);
+    }
+
+    .upload-zone:hover, .upload-zone.drag {
+      border-color: var(--accent);
+      background: rgba(249, 115, 22, 0.03);
+    }
+
+    .upload-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .upload-zone h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .upload-zone p {
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+
+    .upload-zone input {
+      display: none;
+    }
+
+    .file-selected {
+      background: var(--bg-input);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .file-selected-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .file-selected-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .file-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-size {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+
+    .file-clear {
+      cursor: pointer;
+      color: var(--text-tertiary);
+      font-size: 16px;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s;
+    }
+
+    .file-clear:hover {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+
+    /* Buttons */
+    .btn {
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      margin-top: 20px;
+      padding: 16px 24px;
+      background: var(--gradient-brand);
+      color: white;
+      border-radius: var(--radius-md);
+      font-size: 15px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      padding: 10px 16px;
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      border: 1px solid var(--border-default);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-input);
+      border-color: var(--border-strong);
+    }
+
+    /* Sample Prompts */
+    .prompts-heading {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .sample-prompts {
+      display: grid;
+      grid-template-columns: 1fr;
+      max-width: 260px;
+      margin: 0 auto;
+      gap: 12px;
+    }
+
+    .sample-prompt {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+
+    .sample-prompt:hover {
+      background: var(--bg-elevated);
+      border-color: var(--border-default);
+      transform: translateY(-1px);
+    }
+
+    .sample-prompt-icon {
+      font-size: 20px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .sample-prompt-text {
+      font-size: 13px;
+      color: var(--text-primary);
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .sample-prompt-sub {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    /* Results */
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .results-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+    }
+
+    .results-subtitle {
+      font-size: 14px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+
+    /* Summary Grid */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      position: relative;
+      background: var(--bg-secondary);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-card.total { border-color: rgba(59,130,246,0.4); background: radial-gradient(circle at 14px 14px, rgba(59,130,246,0.12), var(--bg-secondary) 70%); }
+    .stat-card.critical { border-color: rgba(239,68,68,0.4); background: radial-gradient(circle at 14px 14px, rgba(239,68,68,0.12), var(--bg-secondary) 70%); }
+    .stat-card.warning { border-color: rgba(245,158,11,0.4); background: radial-gradient(circle at 14px 14px, rgba(245,158,11,0.12), var(--bg-secondary) 70%); }
+    .stat-card.safe { border-color: rgba(16,185,129,0.4); background: radial-gradient(circle at 14px 14px, rgba(16,185,129,0.12), var(--bg-secondary) 70%); }
+
+    .stat-card.active,
+    .stat-card:hover { border-color: var(--border-strong); }
+    .stat-card.total.active, .stat-card.total:hover { border-color: var(--info); }
+    .stat-card.critical.active, .stat-card.critical:hover { border-color: var(--danger); }
+    .stat-card.warning.active, .stat-card.warning:hover { border-color: var(--warning); }
+    .stat-card.safe.active, .stat-card.safe:hover { border-color: var(--success); }
+
+    .stat-card-icon {
+      font-size: 14px;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .stat-card-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+
+    .stat-card.critical .stat-card-dot { background: var(--danger); box-shadow: 0 0 8px rgba(239,68,68,0.6); }
+    .stat-card.warning .stat-card-dot { background: var(--warning); box-shadow: 0 0 8px rgba(245,158,11,0.6); }
+    .stat-card.safe .stat-card-dot { background: var(--success); box-shadow: 0 0 8px rgba(16,185,129,0.6); }
+
+    .stat-card-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      letter-spacing: -0.5px;
+    }
+
+    .stat-card.critical .stat-card-value { color: var(--danger); }
+    .stat-card.warning .stat-card-value { color: var(--warning); }
+    .stat-card.safe .stat-card-value { color: var(--success); }
+    .stat-card.total .stat-card-value { color: var(--info); }
+
+    .stat-card-label {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      font-weight: 600;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stat-card-info {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+    }
+
+    /* Cluster Alert */
+    .cluster-alert {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.03));
+      border: 1px solid var(--warning-border);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      margin-bottom: 20px;
+    }
+
+    .cluster-alert-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--warning);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cluster-item {
+      font-size: 13px;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+
+    .cluster-item code {
+      background: var(--bg-elevated);
+      color: var(--warning);
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+
+    .cluster-pkgs {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Package Card */
+    #pkgList {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+      align-items: start;
+    }
+
+    .pkg-list-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 4px;
+    }
+
+    .expand-all-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .expand-all-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .expand-all-btn svg {
+      width: 11px;
+      height: 11px;
+      stroke: currentColor;
+      fill: none;
+      transition: transform 0.2s;
+    }
+
+    .expand-all-btn.expanded svg {
+      transform: rotate(180deg);
+    }
+
+    .pkg-group-header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-tertiary);
+      margin: 10px 0 -2px 2px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .pkg-group-toggle {
+      margin-left: auto;
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 11px;
+      cursor: pointer;
+      padding: 4px 6px;
+      transition: transform 0.2s;
+    }
+
+    .pkg-group-header.collapsed .pkg-group-toggle {
+      transform: rotate(-90deg);
+    }
+
+    .pkg-group-header:first-child {
+      margin-top: 0;
+    }
+
+    .pkg-group-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .pkg-group-header.RED .pkg-group-dot { background: var(--danger); box-shadow: 0 0 6px rgba(239,68,68,0.6); }
+    .pkg-group-header.YELLOW .pkg-group-dot { background: var(--warning); box-shadow: 0 0 6px rgba(245,158,11,0.6); }
+    .pkg-group-header.RED { color: var(--danger); }
+    .pkg-group-header.YELLOW { color: var(--warning); }
+
+    .pkg-group-count {
+      color: var(--text-tertiary);
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: normal;
+    }
+
+    .pkg-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      transition: all 0.15s;
+      overflow: hidden;
+    }
+
+    .pkg-card:hover {
+      border-color: var(--border-default);
+      box-shadow: var(--shadow-md);
+    }
+
+    .pkg-card.RED { border-left: 4px solid var(--danger); }
+    .pkg-card.YELLOW { border-left: 4px solid var(--warning); }
+    .pkg-card.GREEN { border-left: 4px solid var(--success); }
+
+    .pkg-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+    }
+
+    .risk-score {
+      width: 26px;
+      height: 26px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .risk-score.RED { background: linear-gradient(135deg, var(--danger), #dc2626); }
+    .risk-score.YELLOW { background: linear-gradient(135deg, var(--warning), #d97706); }
+    .risk-score.GREEN { background: linear-gradient(135deg, var(--success), #059669); }
+
+    .pkg-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .pkg-name {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pkg-toggle {
+      background: none;
+      border: none;
+      color: var(--text-tertiary);
+      font-size: 11px;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 4px 2px 4px 8px;
+      transition: transform 0.2s, color 0.15s;
+    }
+
+    .pkg-card.expanded .pkg-toggle {
+      transform: rotate(180deg);
+      color: var(--text-primary);
+    }
+
+    .pkg-details {
+      display: none;
+      padding: 0 18px 16px 18px;
+    }
+
+    .pkg-card.expanded .pkg-details {
+      display: block;
+    }
+
+    .pkg-meta-line {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .pkg-version {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .pkg-eco {
+      font-size: 10px;
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .score-bar {
+      height: 4px;
+      background: var(--bg-elevated);
+      border-radius: 2px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .score-fill.RED { background: linear-gradient(90deg, var(--danger), #dc2626); }
+    .score-fill.YELLOW { background: linear-gradient(90deg, var(--warning), #d97706); }
+    .score-fill.GREEN { background: linear-gradient(90deg, var(--success), #059669); }
+
+    .pkg-narrative {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .pkg-meta {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .meta-tag {
+      font-size: 11px;
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .meta-tag.threat {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border-color: var(--danger-border);
+    }
+
+    .meta-tag.spread {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border-color: var(--warning-border);
+    }
+
+    .meta-tag.precvebadge {
+      background: var(--success-bg);
+      color: var(--success);
+      border-color: var(--success-border);
+      font-weight: 700;
+    }
+
+    .meta-tag.osv-badge {
+      background: var(--info-bg);
+      color: var(--info);
+      border-color: var(--info-border);
+      font-weight: 600;
+    }
+
+    .meta-tag.dts-good {
+      background: var(--success-bg);
+      color: var(--success);
+      border-color: var(--success-border);
+      font-weight: 600;
+    }
+
+    .meta-tag.dts-medium {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border-color: var(--warning-border);
+      font-weight: 600;
+    }
+
+    .meta-tag.dts-poor {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border-color: var(--danger-border);
+      font-weight: 600;
+    }
+
+    /* Safe list */
+    .safe-list {
+      grid-column: 1 / -1;
+      margin: 10px 0 0 0;
+    }
+
+    .safe-list summary {
+      cursor: pointer;
+      color: var(--success);
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      list-style: none;
+      user-select: none;
+      margin: 0 0 -2px 2px;
+    }
+
+    .safe-list summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .safe-list summary::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      background: var(--success);
+      box-shadow: 0 0 6px rgba(16,185,129,0.6);
+    }
+
+    .safe-list summary::after {
+      content: '▾';
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      transition: transform 0.2s;
+      padding: 4px 6px;
+    }
+
+    .safe-list[open] summary::after {
+      transform: rotate(0deg);
+    }
+
+    .safe-list:not([open]) summary::after {
+      transform: rotate(-90deg);
+    }
+
+    .safe-list-items {
+      margin-top: 10px;
+      padding: 12px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .safe-list-item {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-primary);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Loading */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      gap: 20px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--bg-elevated);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* App Shell — main content + docked chat panel side by side */
+    .app-shell {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .main-column {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Chat Panel - Docked side panel (pushes main content, doesn't overlay it) */
+    .chat-panel {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 0;
+      flex-shrink: 0;
+      background: var(--bg-secondary);
+      border-left: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 10;
+    }
+
+    .chat-panel.open {
+      width: 440px;
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .chat-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chat-avatar {
+      width: 34px;
+      height: 34px;
+      background: var(--gradient-brand);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .chat-avatar svg, .msg.bot .msg-avatar svg {
+      width: 18px;
+      height: 18px;
+      stroke: white;
+      fill: none;
+    }
+
+    .msg-avatar svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .chat-title-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .chat-title-sub {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 1px;
+    }
+
+    .chat-close {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      border-radius: 50%;
+      transition: all 0.15s;
+    }
+
+    .chat-close svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+    }
+
+    .chat-close:hover {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .chat-placeholder {
+      text-align: center;
+      color: var(--text-tertiary);
+      font-size: 13px;
+      padding: 60px 20px;
+    }
+
+    .chat-placeholder-icon {
+      opacity: 0.3;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .chat-placeholder-icon svg {
+      width: 44px;
+      height: 44px;
+      stroke: var(--text-tertiary);
+      fill: none;
+    }
+
+    .msg {
+      display: flex;
+      gap: 10px;
+      max-width: 100%;
+      animation: fadeInUp 0.3s;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    .msg.user .msg-avatar {
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+    }
+
+    .msg.bot .msg-avatar {
+      background: var(--gradient-brand);
+      color: white;
+    }
+
+    .msg-content {
+      flex: 1;
+      min-width: 0;
+      background: var(--bg-tertiary);
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      word-wrap: break-word;
+    }
+
+    .msg.user .msg-content {
+      background: var(--bg-elevated);
+    }
+
+    .msg-content p {
+      margin: 0 0 8px 0;
+    }
+
+    .msg-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    .chat-bullet-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .chat-bullet-list li {
+      position: relative;
+      padding-left: 16px;
+    }
+
+    .chat-bullet-list li::before {
+      content: '';
+      position: absolute;
+      left: 2px;
+      top: 7px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .msg.thinking .msg-content {
+      color: var(--text-tertiary);
+      font-style: italic;
+    }
+
+    .thinking-dots {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .thinking-dots span {
+      width: 6px;
+      height: 6px;
+      background: var(--text-tertiary);
+      border-radius: 50%;
+      animation: thinking 1.4s infinite;
+    }
+
+    .thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes thinking {
+      0%, 60%, 100% { opacity: 0.3; }
+      30% { opacity: 1; }
+    }
+
+    /* Suggestions */
+    .suggestions {
+      padding: 0 20px 12px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .suggestion-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-align: left;
+      font-size: 12px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .suggestion-btn svg {
+      width: 13px;
+      height: 13px;
+      stroke: var(--accent);
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .suggestion-btn:hover {
+      background: var(--bg-elevated);
+      border-color: var(--accent);
+    }
+
+    /* Chat Input */
+    .chat-input-container {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .chat-input-wrapper {
+      background: var(--bg-input);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 6px 6px 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.15s;
+    }
+
+    .chat-input-wrapper:focus-within {
+      border-color: var(--accent);
+    }
+
+    .chat-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text-primary);
+      padding: 8px 0;
+    }
+
+    .chat-input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .chat-input:disabled {
+      opacity: 0.5;
+    }
+
+    .chat-send {
+      width: 32px;
+      height: 32px;
+      background: var(--gradient-brand);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .chat-send svg {
+      width: 15px;
+      height: 15px;
+      stroke: white;
+      fill: none;
+    }
+
+    .chat-send:hover:not(:disabled) {
+      transform: scale(1.05);
+    }
+
+    .chat-send:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Chat FAB */
+    .chat-fab {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 60px;
+      height: 60px;
+      background: var(--gradient-brand);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+      transition: all 0.2s;
+      z-index: 99;
+    }
+
+    .chat-fab svg {
+      width: 26px;
+      height: 26px;
+      stroke: white;
+      fill: none;
+    }
+
+    .chat-fab:hover {
+      transform: scale(1.08);
+      box-shadow: var(--shadow-lg), 0 0 60px var(--accent-glow);
+    }
+
+    .chat-fab.hidden {
+      display: none;
+    }
+
+    /* Lead Capture */
+    .lead-capture {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-top: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lead-capture::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .lead-capture h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lead-capture p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 18px;
+    }
+
+    .lead-fields {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .lead-fields input {
+      flex: 1;
+      min-width: 180px;
+      padding: 12px 14px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .lead-fields input:focus {
+      border-color: var(--accent);
+    }
+
+    .lead-fields input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .lead-submit {
+      padding: 12px 22px;
+      background: var(--gradient-brand);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+
+    .lead-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .lead-confirm {
+      display: none;
+      text-align: center;
+      padding: 12px;
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      border-radius: var(--radius-md);
+      color: var(--success);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Hidden utility */
+    .hidden {
+      display: none !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .header {
+        padding: 0 16px;
+      }
+      .header-stats {
+        display: none;
+      }
+      .container {
+        padding: 24px 16px 60px;
+      }
+      .welcome-title {
+        font-size: 34px;
+      }
+      .welcome-subtitle {
+        font-size: 15px;
+      }
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .sample-prompts {
+        grid-template-columns: 1fr;
+      }
+      .chat-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        height: auto;
+      }
+      .chat-panel.open {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+<div class="main-column">
+
+<!-- HEADER -->
+<header class="header">
+  <div class="brand">
+    <div class="brand-icon">🛡️</div>
+    <div class="brand-text">
+      <div class="brand-title">Web of Trust</div>
+      <div class="brand-subtitle">Supply Chain Sentinel</div>
+    </div>
+  </div>
+
+  <div class="header-actions">
+    <div class="header-stats">
+      <div class="header-stat">
+        <div class="header-stat-value danger" id="statThreats">—</div>
+        <div class="header-stat-label">
+          New CVEs (NVD)
+          <i class="stat-info" data-tooltip="New CVEs published to the NVD in the selected time window.">i</i>
+        </div>
+        <div class="threat-tabs">
+          <button class="threat-tab active" data-days="1" onclick="switchThreatTab(this)">Today</button>
+          <button class="threat-tab" data-days="7" onclick="switchThreatTab(this)">7d</button>
+          <button class="threat-tab" data-days="30" onclick="switchThreatTab(this)">30d</button>
+          <button class="threat-tab" data-days="90" onclick="switchThreatTab(this)">90d</button>
+          <button class="threat-tab" data-days="180" onclick="switchThreatTab(this)">6m</button>
+          <button class="threat-tab" data-days="365" onclick="switchThreatTab(this)">12m</button>
+        </div>
+      </div>
+      <div class="header-stat">
+        <div class="header-stat-value accent" id="statWeek">—</div>
+        <div class="header-stat-label">
+          CVEs This Week
+          <i class="stat-info" data-tooltip="Total CVEs published to the NVD in the last 7 days.">i</i>
+        </div>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">
+      🌙
+      <span class="theme-tooltip">Switch to light mode</span>
+    </button>
+    <div class="badge-live">
+      <span class="pulse-dot"></span>
+      <span>Live Intelligence</span>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+
+  <!-- Welcome View -->
+  <div id="welcomeView">
+    <h1 class="welcome-title">Supply chain attacks start with one package.<br/><span class="welcome-title-accent">Don't let it be yours.</span></h1>
+    <p class="welcome-subtitle">
+      Instantly scan any dependency file against public OSV.dev and NVD threat intelligence—zero setup required.
+    </p>
+
+    <!-- Upload Card -->
+    <div class="upload-card">
+      <div id="uploadZone" class="upload-zone" onclick="document.getElementById('fileInput').click()" ondragover="onDrag(event)" ondrop="onDrop(event)">
+        <span class="upload-icon">📂</span>
+        <h3>Drop your dependency file here</h3>
+        <p>or click to browse · Supports package.json, pom.xml, requirements.txt, *.toml</p>
+        <input type="file" id="fileInput" accept=".json,.xml,.txt,.in,.toml" onchange="onFileSelect(event)" />
+      </div>
+
+      <div id="fileSelected" class="file-selected hidden">
+        <div class="file-selected-icon">📄</div>
+        <div class="file-selected-info">
+          <div class="file-name" id="fileName"></div>
+          <div class="file-size" id="fileSize"></div>
+        </div>
+        <span class="file-clear" onclick="clearFile()">✕</span>
+      </div>
+
+      <button class="btn btn-primary" id="analyzeBtn" onclick="analyze()" disabled>
+        <span>🔍</span>
+        <span>Analyze Dependencies</span>
+      </button>
+    </div>
+
+    <!-- Contact Us -->
+    <div class="prompts-heading">Need help?</div>
+    <div class="sample-prompts">
+      <div class="sample-prompt" onclick="window.open('https://github.com/shanmukhhvs/ecosystem-early-warning-agent/issues', '_blank')">
+        <span class="sample-prompt-icon">✉️</span>
+        <div class="sample-prompt-text">Contact Us</div>
+        <div class="sample-prompt-sub">Open an issue on GitHub</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loadingView" class="loading hidden">
+    <div class="spinner"></div>
+    <div class="loading-text">Analyzing against OSV.dev and NVD threat intelligence...</div>
+  </div>
+
+  <!-- Results -->
+  <div id="resultsView" class="hidden">
+    <div class="results-header">
+      <div>
+        <div class="results-title">Scan Results</div>
+        <div class="results-subtitle" id="resultsSubtitle">Complete analysis of your dependencies</div>
+      </div>
+      <button class="btn btn-secondary" onclick="resetScan()">
+        <span>↻</span>
+        <span>New Scan</span>
+      </button>
+    </div>
+
+    <div class="summary-grid">
+      <div class="stat-card total" id="statCardTotal" onclick="filterResults('ALL')">
+        <span class="stat-card-info"><i class="stat-info" data-tooltip="All packages found in your dependency file.">i</i></span>
+        <span class="stat-card-icon">📦</span>
+        <div class="stat-card-value" id="totalCount">0</div>
+        <div class="stat-card-label">Total</div>
+      </div>
+      <div class="stat-card critical" id="statCardCritical" onclick="filterResults('RED')">
+        <span class="stat-card-info"><i class="stat-info" data-tooltip="Packages flagged as malicious or high-risk. Do not use.">i</i></span>
+        <span class="stat-card-dot"></span>
+        <div class="stat-card-value" id="redCount">0</div>
+        <div class="stat-card-label">Critical</div>
+      </div>
+      <div class="stat-card warning" id="statCardWarning" onclick="filterResults('YELLOW')">
+        <span class="stat-card-info"><i class="stat-info" data-tooltip="Packages with moderate risk signals — review before use.">i</i></span>
+        <span class="stat-card-dot"></span>
+        <div class="stat-card-value" id="yellowCount">0</div>
+        <div class="stat-card-label">Warning</div>
+      </div>
+      <div class="stat-card safe" id="statCardSafe" onclick="filterResults('GREEN')">
+        <span class="stat-card-info"><i class="stat-info" data-tooltip="Packages with no known threat indicators.">i</i></span>
+        <span class="stat-card-dot"></span>
+        <div class="stat-card-value" id="greenCount">0</div>
+        <div class="stat-card-label">Safe</div>
+      </div>
+    </div>
+
+    <div id="clusterAlerts"></div>
+    <div class="pkg-list-toolbar" id="pkgListToolbar" style="display:none;">
+      <button class="expand-all-btn" id="expandAllBtn" onclick="toggleExpandAll()">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <span id="expandAllLabel">Expand all</span>
+      </button>
+    </div>
+    <div id="pkgList"></div>
+
+    <div class="prompts-heading" style="margin-top: 32px;">Need help?</div>
+    <div class="sample-prompts">
+      <div class="sample-prompt" onclick="window.open('https://github.com/shanmukhhvs/ecosystem-early-warning-agent/issues', '_blank')">
+        <span class="sample-prompt-icon">✉️</span>
+        <div class="sample-prompt-text">Contact Us</div>
+        <div class="sample-prompt-sub">Open an issue on GitHub</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /.main-column -->
+
+<!-- Chat FAB -->
+<button class="chat-fab hidden" id="chatFab" onclick="toggleChat()">
+  <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"/></svg>
+</button>
+
+<!-- Chat Panel -->
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-header">
+    <div class="chat-title">
+      <div class="chat-avatar">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"/></svg>
+      </div>
+      <div>
+        <div class="chat-title-text">AI Assistant</div>
+        <div class="chat-title-sub">Ask about your scan results</div>
+      </div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="messages" id="chatMessages">
+    <div class="chat-placeholder" id="chatPlaceholder">
+      <span class="chat-placeholder-icon">
+        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      </span>
+      <div>Run a scan first, then chat with your results here.</div>
+    </div>
+  </div>
+
+  <div id="chatSuggestions" class="suggestions hidden"></div>
+
+  <div class="chat-input-container">
+    <div class="chat-input-wrapper">
+      <input
+        type="text"
+        id="chatInput"
+        class="chat-input"
+        placeholder="Ask about your dependencies..."
+        onkeydown="if(event.key==='Enter')sendChat()"
+        disabled
+      />
+      <button class="chat-send" id="chatBtn" onclick="sendChat()" disabled>
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div><!-- /#chatPanel -->
+
+</div><!-- /.app-shell -->
+
+<script>
+  const API_BASE = window.location.origin;
+  let _selectedFile = null;
+  let _reportContext = '';
+  let _lastScanData = null;
+  let _activeFilter = 'ALL';
+
+  // ─────────────────────────────────────────────
+  // LOAD STATS
+  // ─────────────────────────────────────────────
+  async function loadStats() {
+    try {
+      const [pulseResp, statsResp] = await Promise.all([
+        fetch(`${API_BASE}/pulse?days=1`),
+        fetch(`${API_BASE}/stats`),
+      ]);
+      const pulse = await pulseResp.json();
+      const stats = await statsResp.json();
+
+      document.getElementById('statThreats').textContent =
+        pulse.new_threats_count !== undefined ? pulse.new_threats_count.toLocaleString() : '—';
+      document.getElementById('statWeek').textContent =
+        stats.nvd_new_cves_7d !== undefined ? stats.nvd_new_cves_7d.toLocaleString() : '—';
+    } catch (e) {
+      console.log('Stats unavailable');
+    }
+  }
+  loadStats();
+
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('light-mode');
+    const btn = document.getElementById('themeToggle');
+    const tip = btn.querySelector('.theme-tooltip');
+    btn.childNodes[0].textContent = isLight ? '🌞' : '🌙';
+    if (tip) tip.textContent = isLight ? 'Switch to dark mode' : 'Switch to light mode';
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  }
+
+  // Restore saved theme
+  if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light-mode');
+    const btn = document.getElementById('themeToggle');
+    btn.childNodes[0].textContent = '🌞';
+    const tip = btn.querySelector('.theme-tooltip');
+    if (tip) tip.textContent = 'Switch to dark mode';
+  }
+
+  async function switchThreatTab(btn) {
+    document.querySelectorAll('.threat-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const days = parseInt(btn.dataset.days, 10);
+    document.getElementById('statThreats').textContent = '…';
+    try {
+      const resp = await fetch(`${API_BASE}/pulse?days=${days}`);
+      const data = await resp.json();
+      document.getElementById('statThreats').textContent =
+        data.new_threats_count !== undefined ? data.new_threats_count.toLocaleString() : '—';
+    } catch (e) {
+      document.getElementById('statThreats').textContent = '—';
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // FILE UPLOAD
+  // ─────────────────────────────────────────────
+  function onDrag(e) {
+    e.preventDefault();
+    document.getElementById('uploadZone').classList.add('drag');
+  }
+
+  function onDrop(e) {
+    e.preventDefault();
+    document.getElementById('uploadZone').classList.remove('drag');
+    const f = e.dataTransfer.files[0];
+    if (f) setFile(f);
+  }
+
+  function onFileSelect(e) {
+    const f = e.target.files[0];
+    if (f) setFile(f);
+  }
+
+  function setFile(f) {
+    _selectedFile = f;
+    document.getElementById('uploadZone').classList.add('hidden');
+    document.getElementById('fileSelected').classList.remove('hidden');
+    document.getElementById('fileName').textContent = f.name;
+    document.getElementById('fileSize').textContent = (f.size / 1024).toFixed(1) + ' KB';
+    document.getElementById('analyzeBtn').disabled = false;
+  }
+
+  function clearFile() {
+    _selectedFile = null;
+    document.getElementById('uploadZone').classList.remove('hidden');
+    document.getElementById('fileSelected').classList.add('hidden');
+    document.getElementById('analyzeBtn').disabled = true;
+    document.getElementById('fileInput').value = '';
+  }
+
+  // ─────────────────────────────────────────────
+  // DEMO FILES
+  // ─────────────────────────────────────────────
+  async function loadDemo(type) {
+    const demoFiles = {
+      'package.json': '/static/../data/demo-package.json',
+      'pom.xml': '/static/../data/demo-pom.xml',
+      'requirements.txt': '/static/../data/demo-requirements.txt',
+      'pyproject.toml': '/static/../data/demo-pyproject.toml',
+    };
+    try {
+      const resp = await fetch(demoFiles[type]);
+      if (!resp.ok) throw new Error('Demo file not available');
+      const blob = await resp.blob();
+      const file = new File([blob], 'demo-' + type, { type: blob.type });
+      setFile(file);
+      setTimeout(() => analyze(), 300);
+    } catch (e) {
+      alert('Demo file "' + type + '" not accessible via HTTP. Please upload the file manually from data/ folder.');
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // ANALYZE
+  // ─────────────────────────────────────────────
+  async function analyze() {
+    if (!_selectedFile) return;
+
+    document.getElementById('welcomeView').classList.add('hidden');
+    document.getElementById('resultsView').classList.add('hidden');
+    document.getElementById('loadingView').classList.remove('hidden');
+
+    const form = new FormData();
+    form.append('file', _selectedFile);
+
+    try {
+      const resp = await fetch(`${API_BASE}/analyze`, { method: 'POST', body: form });
+      if (!resp.ok) {
+        const err = await resp.json();
+        throw new Error(err.detail || 'Analysis failed');
+      }
+      const data = await resp.json();
+      renderResults(data);
+      enableChat(data);
+      document.getElementById('chatFab').classList.remove('hidden');
+    } catch (e) {
+      console.error('Analyze error:', e.message, e.stack);
+      document.getElementById('loadingView').classList.add('hidden');
+      document.getElementById('welcomeView').classList.remove('hidden');
+    } finally {
+      document.getElementById('loadingView').classList.add('hidden');
+    }
+  }
+
+  function resetScan() {
+    _lastScanData = null;
+    _activeFilter = 'ALL';
+    _groupsExpanded = false;
+    document.getElementById('pkgList').innerHTML = '';
+    document.getElementById('clusterAlerts').innerHTML = '';
+    document.getElementById('resultsView').classList.add('hidden');
+    document.getElementById('welcomeView').classList.remove('hidden');
+    document.getElementById('chatFab').classList.add('hidden');
+    document.getElementById('chatPanel').classList.remove('open');
+    clearFile();
+  }
+
+  // ─────────────────────────────────────────────
+  // RENDER RESULTS
+  // ─────────────────────────────────────────────
+  function renderResults(data) {
+    _lastScanData = data;
+    _activeFilter = 'ALL';
+    _groupsExpanded = false;
+
+    document.getElementById('totalCount').textContent = data.summary.total;
+    document.getElementById('redCount').textContent = data.summary.red;
+    document.getElementById('yellowCount').textContent = data.summary.yellow;
+    document.getElementById('greenCount').textContent = data.summary.green;
+
+    const critical = data.summary.red;
+    const subtitle = critical > 0
+      ? `⚠️ Found ${critical} critical threat${critical > 1 ? 's' : ''} in your dependencies`
+      : `✅ No critical threats detected`;
+    document.getElementById('resultsSubtitle').textContent = subtitle;
+
+    renderClusterAlerts(data.namespace_clusters || []);
+    renderPkgList();
+    updateActiveStatCard();
+
+    document.getElementById('resultsView').classList.remove('hidden');
+  }
+
+  function filterResults(tier) {
+    if (!_lastScanData) return;
+    _activeFilter = (_activeFilter === tier) ? 'ALL' : tier;
+    renderPkgList();
+    updateActiveStatCard();
+  }
+
+  function updateActiveStatCard() {
+    document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active'));
+    const idByTier = { ALL: 'statCardTotal', RED: 'statCardCritical', YELLOW: 'statCardWarning', GREEN: 'statCardSafe' };
+    const el = document.getElementById(idByTier[_activeFilter]);
+    if (el) el.classList.add('active');
+  }
+
+  function renderPkgList() {
+    const data = _lastScanData;
+    const list = document.getElementById('pkgList');
+    list.innerHTML = '';
+    if (!data) return;
+
+    const toolbar = document.getElementById('pkgListToolbar');
+
+    if (_activeFilter === 'ALL') {
+      const safe = data.packages.filter(p => p.traffic_light === 'GREEN');
+      const groups = [
+        { tier: 'RED', label: 'Critical' },
+        { tier: 'YELLOW', label: 'Warning' }
+      ];
+
+      let hasGroups = false;
+
+      groups.forEach(({ tier, label }) => {
+        const pkgs = data.packages.filter(p => p.traffic_light === tier);
+        if (!pkgs.length) return;
+        hasGroups = true;
+        const header = document.createElement('div');
+        header.className = `pkg-group-header ${tier} collapsed`;
+        header.innerHTML = `
+          <span class="pkg-group-dot"></span>${label} <span class="pkg-group-count">${pkgs.length}</span>
+          <button class="pkg-group-toggle" title="Collapse/expand">▾</button>
+        `;
+        header.onclick = () => toggleGroupSection(tier, header);
+        list.appendChild(header);
+        pkgs.forEach(p => {
+          const card = pkgCard(p);
+          card.style.display = 'none';
+          list.appendChild(card);
+        });
+      });
+
+      if (safe.length) {
+        hasGroups = true;
+        const details = document.createElement('details');
+        details.className = 'safe-list';
+        const items = safe.map(p =>
+          `<span class="safe-list-item">${p.name}${p.version ? '@' + p.version : ''}</span>`
+        ).join('');
+        details.innerHTML = `
+          <summary>Safe <span class="pkg-group-count">${safe.length}</span></summary>
+          <div class="safe-list-items">${items}</div>
+        `;
+        list.appendChild(details);
+      }
+
+      _groupsExpanded = false;
+      const expandAllBtn = document.getElementById('expandAllBtn');
+      if (expandAllBtn) {
+        expandAllBtn.classList.remove('expanded');
+        document.getElementById('expandAllLabel').textContent = 'Expand all';
+      }
+      if (toolbar) toolbar.style.display = hasGroups ? 'flex' : 'none';
+      return;
+    }
+
+    if (toolbar) toolbar.style.display = 'none';
+    const filtered = data.packages.filter(p => p.traffic_light === _activeFilter);
+    filtered.forEach(p => list.appendChild(pkgCard(p)));
+  }
+
+  function toggleGroupSection(tier, header) {
+    const collapsed = header.classList.toggle('collapsed');
+    document.querySelectorAll(`#pkgList .pkg-card[data-group="${tier}"]`).forEach(el => {
+      el.style.display = collapsed ? 'none' : '';
+    });
+  }
+
+  let _groupsExpanded = false;
+
+  function toggleExpandAll() {
+    _groupsExpanded = !_groupsExpanded;
+    document.querySelectorAll('#pkgList .pkg-group-header').forEach(header => {
+      const tier = header.classList.contains('RED') ? 'RED' : 'YELLOW';
+      header.classList.toggle('collapsed', !_groupsExpanded);
+      document.querySelectorAll(`#pkgList .pkg-card[data-group="${tier}"]`).forEach(el => {
+        el.style.display = _groupsExpanded ? '' : 'none';
+      });
+    });
+    document.querySelectorAll('#pkgList .safe-list').forEach(details => {
+      details.open = _groupsExpanded;
+    });
+    const expandAllBtn = document.getElementById('expandAllBtn');
+    if (expandAllBtn) {
+      expandAllBtn.classList.toggle('expanded', _groupsExpanded);
+      document.getElementById('expandAllLabel').textContent = _groupsExpanded ? 'Collapse all' : 'Expand all';
+    }
+  }
+
+  function renderClusterAlerts(clusters) {
+    const el = document.getElementById('clusterAlerts');
+    el.innerHTML = '';
+    if (!clusters || clusters.length === 0) return;
+
+    const div = document.createElement('div');
+    div.className = 'cluster-alert';
+    div.innerHTML =
+      `<div class="cluster-alert-title">⚠️ Coordinated Attack Pattern Detected</div>` +
+      clusters.map(c => `
+        <div class="cluster-item">
+          <strong>${c.count} packages</strong> in the <code>${c.namespace}</code> namespace (${c.ecosystem}) are all flagged — possible namespace squatting or supply chain attack.
+          <div class="cluster-pkgs">${c.packages.join(', ')}</div>
+        </div>
+      `).join('');
+    el.appendChild(div);
+  }
+
+  function pkgCard(p) {
+    const div = document.createElement('div');
+    div.className = `pkg-card ${p.traffic_light}`;
+    div.dataset.group = p.traffic_light;
+    const intel = p.intel || {};
+    const metaTags = [];
+
+    if (intel.discovered_date) {
+      metaTags.push(`<span class="meta-tag">Detected ${intel.discovered_date}</span>`);
+    }
+    if (typeof intel.developer_trust_score === 'number') {
+      const dts = intel.developer_trust_score;
+      const dtsClass = dts >= 80 ? 'dts-good' : dts >= 50 ? 'dts-medium' : 'dts-poor';
+      metaTags.push(`<span class="meta-tag ${dtsClass}">🎯 Trust Score ${dts}/100</span>`);
+    }
+    if (intel.source === 'osv-mal') {
+      // Confirmed malicious package via OSV MAL-* advisory
+      metaTags.push(`<span class="meta-tag threat">☠ MALICIOUS · ${intel.malware_id}</span>`);
+    } else if (intel.typosquat_of) {
+      // Typosquat warning — 1 edit from a popular package (not a malware verdict)
+      metaTags.push(`<span class="meta-tag spread">⚠ Possible typosquat of '${intel.typosquat_of}'</span>`);
+    } else if (intel.source === 'osv' || intel.source === 'nvd') {
+      // Public CVE — show count, top CVE ID, and CVSS score
+      const vulnCount = intel.vulnerability_count || 0;
+      const topVuln = (intel.vulnerabilities || [])[0];
+      const cveLabel = topVuln && topVuln.cve ? topVuln.cve : (topVuln ? topVuln.id : '');
+      const cvss = intel.top_cvss ? ` · CVSS ${intel.top_cvss}` : '';
+      const sourceLabel = intel.source === 'nvd' ? 'NVD' : 'OSV';
+      metaTags.push(`<span class="meta-tag osv-badge">🛡 ${vulnCount} CVE${vulnCount !== 1 ? 's' : ''} via ${sourceLabel}${cveLabel ? ' · ' + cveLabel : ''}${cvss}</span>`);
+    }
+
+    const pkgName = `${p.namespace ? p.namespace + '/' : ''}${p.name}`;
+    div.innerHTML = `
+      <div class="pkg-header" onclick="this.closest('.pkg-card').classList.toggle('expanded')">
+        <div class="risk-score ${p.traffic_light}">${p.risk_score}</div>
+        <div class="pkg-info">
+          <div class="pkg-name" title="${pkgName}">${pkgName}</div>
+        </div>
+        <button class="pkg-toggle" title="Show details">▾</button>
+      </div>
+      <div class="pkg-details">
+        <div class="pkg-meta-line">
+          <span class="pkg-version">${p.version || 'no version'}</span>
+          <span class="pkg-eco">${p.ecosystem}</span>
+        </div>
+        <div class="score-bar">
+          <div class="score-fill ${p.traffic_light}" style="width:${p.risk_score}%"></div>
+        </div>
+        <div class="pkg-narrative">${p.narrative || ''}</div>
+        ${metaTags.length ? `<div class="pkg-meta">${metaTags.join('')}</div>` : ''}
+      </div>
+    `;
+    return div;
+  }
+
+  // ─────────────────────────────────────────────
+  // LEAD CAPTURE
+  // ─────────────────────────────────────────────
+  async function submitLead() {
+    const email = document.getElementById('leadEmail').value.trim();
+    const company = document.getElementById('leadCompany').value.trim();
+    if (!email) {
+      document.getElementById('leadEmail').focus();
+      return;
+    }
+    const red = parseInt(document.getElementById('redCount').textContent) || 0;
+    const total = parseInt(document.getElementById('totalCount').textContent) || 0;
+    try {
+      await fetch(`${API_BASE}/api/lead`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, company, packages_scanned: total, red_count: red }),
+      });
+    } catch (e) {}
+    document.getElementById('leadFields').style.display = 'none';
+    document.getElementById('leadConfirm').style.display = 'block';
+  }
+
+  // ─────────────────────────────────────────────
+  // CHAT
+  // ─────────────────────────────────────────────
+  function toggleChat() {
+    document.getElementById('chatPanel').classList.toggle('open');
+  }
+
+  function enableChat(data) {
+    _reportContext = JSON.stringify(data.packages.map(p => ({
+      name: p.name,
+      ecosystem: p.ecosystem,
+      version: p.version,
+      risk_score: p.risk_score,
+      traffic_light: p.traffic_light,
+      malicious: p.intel?.source === 'osv-mal',
+      malware_id: p.intel?.malware_id || '',
+      malware_details: p.intel?.malware_details || '',
+      vulnerability_count: p.intel?.vulnerability_count || 0,
+      top_cvss: p.intel?.top_cvss ?? null,
+      developer_trust_score: p.intel?.developer_trust_score ?? null,
+      discovered_date: p.intel?.discovered_date || '',
+      narrative: p.narrative,
+    })));
+
+    const chatPlaceholder = document.getElementById('chatPlaceholder');
+    if (chatPlaceholder) chatPlaceholder.classList.add('hidden');
+    const chatInput = document.getElementById('chatInput');
+    if (chatInput) chatInput.disabled = false;
+    const chatBtn = document.getElementById('chatBtn');
+    if (chatBtn) chatBtn.disabled = false;
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) chatMessages.innerHTML = '';
+
+    const hasRed = data.summary.red > 0;
+    const hasNsCluster = data.namespace_clusters && data.namespace_clusters.length > 0;
+
+    let welcomeMsg = `I've analyzed **${data.summary.total} dependencies**: `;
+    welcomeMsg += `${data.summary.red} critical, ${data.summary.yellow} warnings, ${data.summary.green} safe.`;
+    if (hasNsCluster) welcomeMsg += ` ⚠️ **Coordinated namespace attack detected!**`;
+    welcomeMsg += ' Ask me anything about the results.';
+
+    addChatMsg('bot', welcomeMsg);
+
+    const suggestions = [];
+    if (hasRed) {
+      suggestions.push('Which package should I remove first?');
+      suggestions.push('Explain the highest risk package');
+    }
+    if (hasNsCluster) {
+      suggestions.push('What is a namespace squatting attack?');
+    }
+    suggestions.push('How do these compare to CVE data?');
+
+    const suggestEl = document.getElementById('chatSuggestions');
+    const sparkleIcon = '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg>';
+    suggestEl.innerHTML = suggestions.map(q =>
+      `<button class="suggestion-btn" onclick="askSuggestion('${q.replace(/'/g, "\\'")}')">${sparkleIcon}${q}</button>`
+    ).join('');
+    suggestEl.classList.remove('hidden');
+  }
+
+  function askSuggestion(q) {
+    document.getElementById('chatInput').value = q;
+    sendChat();
+  }
+
+  function inlineFormat(line) {
+    return line
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/`(.+?)`/g, '<code style="background:var(--bg-elevated);padding:1px 5px;border-radius:3px;font-family:JetBrains Mono,monospace;font-size:12px">$1</code>');
+  }
+
+  function formatChatText(text) {
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length);
+    let html = '';
+    let inList = false;
+    lines.forEach(line => {
+      const isBullet = /^[-*]\s+/.test(line);
+      if (isBullet) {
+        if (!inList) { html += '<ul class="chat-bullet-list">'; inList = true; }
+        html += `<li>${inlineFormat(line.replace(/^[-*]\s+/, ''))}</li>`;
+      } else {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += `<p>${inlineFormat(line)}</p>`;
+      }
+    });
+    if (inList) html += '</ul>';
+    return html;
+  }
+
+  function addChatMsg(role, text) {
+    const msgs = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `msg ${role}`;
+
+    const avatar = document.createElement('div');
+    avatar.className = 'msg-avatar';
+    avatar.innerHTML = role === 'user'
+      ? 'U'
+      : '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"/></svg>';
+
+    const content = document.createElement('div');
+    content.className = 'msg-content';
+
+    if (role === 'thinking') {
+      div.className = 'msg bot thinking';
+      content.innerHTML = 'Thinking <span class="thinking-dots"><span></span><span></span><span></span></span>';
+    } else {
+      content.innerHTML = formatChatText(text);
+    }
+
+    div.appendChild(avatar);
+    div.appendChild(content);
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return div;
+  }
+
+  async function sendChat() {
+    const q = document.getElementById('chatInput').value.trim();
+    if (!q) return;
+
+    document.getElementById('chatInput').value = '';
+    document.getElementById('chatBtn').disabled = true;
+    document.getElementById('chatSuggestions').classList.add('hidden');
+
+    addChatMsg('user', q);
+    const thinking = addChatMsg('thinking', '');
+
+    try {
+      const resp = await fetch(`${API_BASE}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: q, report_context: _reportContext }),
+      });
+      const data = await resp.json();
+      thinking.remove();
+      addChatMsg('bot', data.answer || 'No answer.');
+    } catch (e) {
+      thinking.remove();
+      addChatMsg('bot', '❌ Error: ' + e.message);
+    } finally {
+      document.getElementById('chatBtn').disabled = false;
+      document.getElementById('chatInput').focus();
+    }
+  }
+</script>
+</body>
+</html>

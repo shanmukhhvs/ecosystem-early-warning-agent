@@ -1,0 +1,11 @@
+backend/venv/
+backend/__pycache__/
+__pycache__/
+*.pyc
+.env
+*.egg-info/
+.DS_Store
+.idea/
+data/*.csv
+backend/leads.log
+docs/WHAT-WE-BUILT.md
